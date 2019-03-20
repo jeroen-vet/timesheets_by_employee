@@ -29,6 +29,10 @@ class EmployeeTimesheet(models.TransientModel):
     employee = fields.Many2one('res.users', string="Employee", required=True)
     from_date = fields.Date(string="Starting Date")
     to_date = fields.Date(string="Ending Date")
+    ag_lvl = fields.Selection(selection=[('none',"No Aggregation"),('day',"By Day"),('week',"By Week"),('month',"By Month"),('year',"By Year")],string="Aggregation Level", required=True, default='none')
+    tasks = fields.Boolean("Include tasks")
+    descr = fields.Boolean("Include descriptions")
+    projects = fields.Many2many(comodel_name='project.project',domain=[('allow_timesheets','=',True)])
 
     def print_timesheet(self, data):
         """Redirects to the report with the values obtained from the wizard

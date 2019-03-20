@@ -3,8 +3,9 @@
     <template id="report_timesheets">
       <t t-call="report.html_container">
           <t t-foreach="docs" t-as="o">
+            <t t-call="report.external_layout">
               <div class="page">
-                      <t t-call="report.external_layout">
+
                       <div class="row">
                           <div class="mt32 mb32">
                               <table style="border:1px solid;width:100%;">
@@ -49,8 +50,15 @@
                               <table style="border:1px solid;width:100%;">
                                     <thead>
                                         <tr style="height:35px;border:1px solid">
-                                            <th style="vertical-align:middle;text-align:center;border:1px solid">Date</th>
+                                            <th style="vertical-align:middle;text-align:center;border:1px solid">
+                                                <t t-if="docs.ag_lvl=='week'">Week No.</t>
+                                                <t t-elif="docs.ag_lvl=='month'">Month</t>
+                                                <t t-elif="docs.ag_lvl=='year'">Year</t>
+                                                <t t-else="">Date</t>
+                                            </th>
                                             <th style="vertical-align:middle;text-align:center;border:1px solid">Project</th>
+                                            <th t-if="docs.tasks" style="vertical-align:middle;text-align:center;border:1px solid">Task</th>
+                                            <th t-if="docs.descr and  docs.ag_lvl=='none'" style="vertical-align:middle;text-align:center;border:1px solid">Description</th>
                                             <th style="vertical-align:middle;text-align:center;border:1px solid">Worked Time</th>
                                         </tr>
                                     </thead>
@@ -58,14 +66,35 @@
                                       <tr t-foreach="timesheets" t-as="t" style="height:35px;border:1px solid">
                                             <td style="vertical-align:middle;text-align:center;border:1px solid"><span t-esc="t['date']"/></td>
                                             <td style="vertical-align:middle;text-align:center;border:1px solid"><span t-esc="t['project']"/></td>
+                                            <td t-if="docs.tasks" style="vertical-align:middle;text-align:center;border:1px solid"><span t-esc="t['task']"/></td>
+                                            <td t-if="docs.descr and  docs.ag_lvl=='none'" style="vertical-align:middle;text-align:center;border:1px solid"><span t-esc="t['descr']"/></td>
                                             <td style="vertical-align:middle;text-align:center;border:1px solid"><span t-esc="t['duration']"/></td>
                                         </tr>
                                   </tbody>
                               </table>
                           </div>
                       </div>
-                  </t>
+                      <div class="row">
+                          <div class="mt32 mb32">
+                              <table style="border:1px solid;width:100%;">
+                                    <thead>
+                                        <tr style="height:35px;border:1px solid">
+                                            <th style="vertical-align:middle;text-align:center;border:1px solid">Signature Employee</th>
+                                            <th style="vertical-align:middle;text-align:center;border:1px solid">Signature Manager</th>
+                                        </tr>
+                                    </thead>
+                                  <tbody>
+                                      <tr style="height:70px;border:1px solid">
+                                            <td style="vertical-align:middle;text-align:center;border:1px solid"></td>
+                                            <td style="vertical-align:middle;text-align:center;border:1px solid">\</td>
+                                        </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                      
               </div>
+            </t>
           </t>
        </t>
     </template>
