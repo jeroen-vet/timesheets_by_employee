@@ -19,5 +19,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import report
-import wizard
+from . import report
+from . import wizard

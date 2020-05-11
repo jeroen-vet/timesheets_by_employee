@@ -34,10 +34,15 @@ class EmployeeTimesheet(models.TransientModel):
     descr = fields.Boolean("Include descriptions")
     projects = fields.Many2many(comodel_name='project.project',domain=[('allow_timesheets','=',True)])
 
-    def print_timesheet(self, data):
+    
+
+    def print_timesheet(self):
         """Redirects to the report with the values obtained from the wizard
         'data['form']': name of employee and the date duration"""
-        data = {}
-        data['form'] = self.read(['employee', 'from_date', 'to_date'])[0]
-        return self.env['report'].get_action(self, 'timesheets_by_employee.report_timesheets', data=data)
+        data = {
+            'start_date': self.from_date,
+            'end_date': self.to_date,
+            'employee': self.employee.id
+        }
+        return self.env.ref('timesheets_by_employee.action_report_print_timesheets').report_action(self, data=data, config=False)
 

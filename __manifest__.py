@@ -6,9 +6,6 @@
 #    you can modify it under the terms of the GNU LESSER
 #    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
 #
-#    It is forbidden to publish, distribute, sublicense, or sell copies
-#    of the Software or modified copies of the Software.
-#
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,20 +18,22 @@
 ##############################################################################
 {
     'name': 'Timesheet PDF Report',
-    'version': '10.0.1.0.0',
+    'version': '12.0.1.0.0',
     "category": "Generic Modules/Human Resources",
     'sequence': 25,
     'summary': 'Timesheet PDF Report of Employees',
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
-    'website': 'www.cybrosys.com',
+    'maintainer': 'Cybrosys Techno Solutions',
+    'website': 'https://www.cybrosys.com',
     'depends': ['hr_timesheet'],
     'data': [
              'report/report_timesheets.xml',
+             'report/timesheet_pdf.xml',
              'wizard/timesheet_wizard.xml',
             ],
-    'images': ['static/description/banner.jpg'],
-    'license': 'AGPL-3',
+    'images': ['static/description/banner.png'],
+    'license': 'LGPL-3',
     'installable': True,
     'auto_install': False,
     'application': False,

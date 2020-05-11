@@ -19,4 +19,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import timesheet_employee
+from . import timesheet_employee

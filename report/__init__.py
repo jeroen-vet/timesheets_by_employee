@@ -19,4 +19,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import report_timesheets
+from . import report_timesheets

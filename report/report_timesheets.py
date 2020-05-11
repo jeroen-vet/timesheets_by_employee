@@ -20,7 +20,6 @@
 #
 ##############################################################################
 from odoo import models, fields, api
-import pdb
 
 import datetime
 from datetime import timedelta, date
@@ -35,13 +34,16 @@ def get_end_date_week(year, week):
      return d + dlt + timedelta(days=6)
 
 
+
+
 class ReportTimesheet(models.AbstractModel):
     _name = 'report.timesheets_by_employee.report_timesheets'
 
     def get_timesheets(self, docs):
         """input : name of employee and the starting date and ending date
         output: timesheets by that particular employee within that period and the total duration"""
-        
+
+
         # make domain
         dom=[('user_id','=',docs.employee[0].id),('is_timesheet','=',True)] # this requires enterprise version
         if docs.from_date:
@@ -50,17 +52,6 @@ class ReportTimesheet(models.AbstractModel):
             dom.append(('date', '<=', docs.to_date))
         if docs.projects:
             dom.append(('project_id','in',[p.id for p in docs.projects]))    
-        #~ if docs.from_date and docs.to_date:
-            #~ rec = self.env['account.analytic.line'].search([('user_id', '=', docs.employee[0].id),
-                                                        #~ ('date', '>=', docs.from_date),('date', '<=', docs.to_date)])
-        #~ elif docs.from_date:
-            #~ rec = self.env['account.analytic.line'].search([('user_id', '=', docs.employee[0].id),
-                                                        #~ ('date', '>=', docs.from_date)])
-        #~ elif docs.to_date:
-            #~ rec = self.env['account.analytic.line'].search([('user_id', '=', docs.employee[0].id),
-                                                            #~ ('date', '<=', docs.to_date)])
-        #~ else:
-            #~ rec = self.env['account.analytic.line'].search([('user_id', '=', docs.employee[0].id)])
         rec  = self.env['account.analytic.line'].search(dom, order="date asc")
         records = []
         total = 0
@@ -126,24 +117,23 @@ class ReportTimesheet(models.AbstractModel):
                                     } 
                                 records.append(vals)
                        break
-                           
-                           
-                             
+
+
+
         return [records, total]
 
     @api.model
-    def render_html(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         """we are overwriting this function because we need to show values from other models in the report
         we pass the objects in the docargs dictionary"""
-
         self.model = self.env.context.get('active_model')
         docs = self.env[self.model].browse(self.env.context.get('active_id'))
         identification = []
         for i in self.env['hr.employee'].search([('user_id', '=', docs.employee[0].id)]):
             if i:
-                identification.append({'id': i.identification_id, 'name': i.name_related})
-
+                identification.append({'id': i.id, 'name': i.name})
         timesheets = self.get_timesheets(docs)
+        company_name = self.env['res.company'].search([('name', '=', docs.employee[0].company_id.name)])
         period = None
         if docs.from_date and docs.to_date:
             period = "From " + str(docs.from_date) + " To " + str(docs.to_date)
@@ -151,15 +141,17 @@ class ReportTimesheet(models.AbstractModel):
             period = "From " + str(docs.from_date)
         elif docs.from_date:
             period = " To " + str(docs.to_date)
-        docargs = {
-           'doc_ids': self.ids,
-           'doc_model': self.model,
-           'docs': docs,
-           'timesheets': timesheets[0],
-           'total': timesheets[1],
-           'company': docs.employee[0].company_id.name,
-           'identification': identification,
-           'period': period,
-           'date': date,
+        return {
+               'doc_ids': self.ids,
+               'doc_model': self.model,
+               'docs': docs,
+               'timesheets': timesheets[0],
+               'total': timesheets[1],
+               'company': company_name,
+               'identification': identification,
+               'period': period,
+               'date': date,
         }
-        return self.env['report'].render('timesheets_by_employee.report_timesheets', docargs)
+
+
+
